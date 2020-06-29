@@ -13,7 +13,7 @@
 //              this block helps us to do the alignment stage.
 //
 //////////////////////////////////////////////////////////////////////////////////
-module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign 
+module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign , ZeroFlag
     );
 	 
 	 parameter ExponentSize =  8 ; // the size of exponent different form half, single or double percesion
@@ -23,6 +23,7 @@ module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign
 	 reg [ ExponentSize - 1 : 0 ] Difference ;
 	 output Sign ; // hold the sign of operation
 	 reg Sign ;  // 0 -> + , 1 -> -
+	 output ZeroFlag ; // indicate if the both exponets are equal.
 	 
 	 always @( Exponent1 or Exponent2 ) 
 		begin : GET_D_SignOfD
@@ -37,4 +38,7 @@ module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign
 					Difference = Exponent1 - Exponent2 ;
 				end
 			end 
+			
+	assign ZeroFlag = Difference ? 1'b0 : 1'b1 ;
+	
 endmodule
