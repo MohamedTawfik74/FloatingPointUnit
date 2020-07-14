@@ -23,7 +23,9 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 
 	input [ DataSize - 1 : 0 ] Operand1 , Operand2 ; // Op1 (+/-) Op2
 	
-	input Operation ; // until complete all the algorthim 0 -> + , 1 -> - 
+	input [ 1 : 0 ] Operation ; // until complete all the algorthim 
+										 // Operation[0] 0 -> ADD/MUL , 1 -> SUB/DIV
+										 // Operation[1] 0 -> ADD/SUB algorthim , 1-> MUL/DIV algorthim
 	
 	output [ DataSize - 1 : 0 ] Result ; //
 	
@@ -32,7 +34,7 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	
 	// Pipelined #1
 	wire [ DataSize - 1 : 0 ] pipeOperand1 , pipeOperand2 ; // to receive from input
-	wire pipeOperation ;
+	wire [ 1 : 0 ] pipeOperation ;
 	
 	wire [ ExponentSize - 1 : 0 ] Exponent1 , Exponent2 ; 
 	wire [ MantissaSize - 1 : 0 ] Mantissa1 , Mantissa2 ; 
@@ -41,6 +43,8 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	wire [ ExponentSize - 1 : 0 ] pipeExponent1 , pipeExponent2 ;
 	wire [ MantissaSize - 1 : 0 ] pipeMantissa1 , pipeMantissa2 ; 
 	wire pipeOperandSign1 , pipeOperandSign2 ; 
+	
+	wire [ ExponentSize - 1 : 0 ] MDExponent , pipeMDExponent ;
 	
 	// Exponet Differenece Nets
 	wire [4 : 0 ] Difference ; 
@@ -56,14 +60,18 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
    wire pipeEffCarry ;
 	
 	// Pipelined #2
-	wire [ ExponentSize - 1 : 0 ] pipeExponentBase2 , pipeExponentBase , ExponentBase ;
+	wire [ ExponentSize - 1 : 0 ] pipeExponentBase2 , pipeExponentBase , ExponentBase , pipeMDFinalExponent ,MDFinalExponent ;
+	
+	wire AlgorSel , pipeAlgorSel ;
    // pipelined #3 
 	wire [ RoundingSize - 1 : 0 ] Adder1 , Adder2 ;
 	wire [ RoundingSize - 1 : 0 ] pipeAdder1 , pipeAdder2 ;
 	wire [ RoundingSize - 1 : 0 ] AdderResult ;
 	wire [ RoundingSize - 1 : 0 ] pipeAdderResult ;		
+	wire [ ExponentSize - 1 : 0 ] pipeResultExponent , ResultExponent ;
 	
 	// pipelined #4
+	
 	wire [ ExponentSize - 1 : 0 ] ExponentAdderResult1 , pipeExponentAdderResult1 ;
 	wire ExponentAdderCarry1 , pipeExponentAdderCarry1 ;
 	
@@ -92,7 +100,7 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	 register#(DataSize) inputOperand2 ( .D(Operand2) , .Q(pipeOperand2) , .CLK(CLK)
     ); // receive the second operand
 	 
-	 register inputOperation ( .D(Operation) , .Q(pipeOperation) , .CLK(CLK) 
+	 register#(2) inputOperation ( .D(Operation) , .Q(pipeOperation) , .CLK(CLK) 
 	 ); // receive the operation
 	 
 	// Pipelined #1
@@ -100,7 +108,7 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	PipelinedStage1 Stage1 (
     .Operand1(pipeOperand1), 
     .Operand2(pipeOperand2), 
-    .Operation(pipeOperation), 
+    .Operation(pipeOperation[0]), 
     .Exponent1(Exponent1), 
     .Exponent2(Exponent2), 
     .Mantissa1(Mantissa1), 
@@ -111,7 +119,8 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
     .EffOperation(EffOperation), 
     .Difference(Difference), 
     .SignOfDifference(SignOfDifference), 
-    .ZeroDifference(ZeroDifference)
+    .ZeroDifference(ZeroDifference),
+	 .MDExponent(MDExponent)
     );
 	
 	 
@@ -132,6 +141,8 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	 
 	 register OperandSign2Reg ( .D(OperandSign2) , .Q(pipeOperandSign2) , .CLK(CLK) 
 	 );
+	 register AlgorthimSelReg1 ( .D(pipeOperation[1]) , .Q(AlgorSel) , .CLK(CLK) 
+	 );
 	 
 	 register#(2) CompareReg ( .D(Compare) , .Q(pipeCompare) , .CLK(CLK) 
 	 );
@@ -148,9 +159,13 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	 register EffectivOperationReg1 ( .D(EffOperation) , .Q(pipeEffOperation) , .CLK(CLK) 
 	 ); // store the the effective operation
 	 
+	 register#(ExponentSize) MDExponentReg ( .D(MDExponent) , .Q(pipeMDExponent) , .CLK(CLK) 
+	 );
+	 
 	 // Pipelined #2 
 
     PipelinedStage2 Stage2 (
+	 .MDExponent(pipeMDExponent),
     .Exponent1(pipeExponent1), 
     .Exponent2(pipeExponent2), 
     .Mantissa1(pipeMantissa1), 
@@ -162,7 +177,8 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
     .Difference(pipeDifference), 
     .ExponentBase(ExponentBase), 
     .Adder1(Adder1), 
-    .Adder2(Adder2)
+    .Adder2(Adder2),
+	 .MDFinalExponent(MDFinalExponent)
     );
 	 
 	 register#(RoundingSize) Adder1Reg ( .D(Adder1) , .Q(pipeAdder1) , .CLK(CLK)
@@ -177,21 +193,31 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	 register EffectivOperationReg2 ( .D(pipeEffOperation) , .Q(pipeEffOperation2) , .CLK(CLK) 
 	 ); // store the the effective operation
 	 
+	  register#(ExponentSize) MDFinalExponentReg ( .D(MDFinalExponent) , .Q(pipeMDFinalExponent) , .CLK(CLK) 
+	 );
+	 
+	 register AlgorthimSelReg2 ( .D(AlgorSel) , .Q(pipeAlgorSel) , .CLK(CLK) 
+	 );
+	 
 	 // pipelined #3 : Add the two mantissa
 	 
 	 PipelinedStgae3 Stage3 (
+	 .OpSel(pipeAlgorSel),
+	 .MDFinalExponent(pipeMDFinalExponent),
+	 .ExponentBase(pipeExponentBase),
     .Adder1(pipeAdder1), 
     .Adder2(pipeAdder2), 
     .EffOperation(pipeEffOperation2), 
     .EffCarry(EffCarry), 
     .AdderResult(AdderResult), 
-    .NormShifts(NormShifts)
+    .NormShifts(NormShifts),
+	 .ResultExponent(ResultExponent)
     );
 	 
 	  register#(RoundingSize) AdderResultReg ( .D(AdderResult) , .Q(pipeAdderResult) , .CLK(CLK)
     ); // hold Addition result
 	 
-	 register#(ExponentSize) ExponentBaseReg2 ( .D(pipeExponentBase) , .Q(pipeExponentBase2) , .CLK(CLK)
+	 register#(ExponentSize) ResultExponentReg ( .D(ResultExponent) , .Q(pipeResultExponent) , .CLK(CLK)
     ); // hold the Exponent Base 
 	 
 	 register EffCarryReg1 ( .D(EffCarry) , .Q(pipeEffCarry) , .CLK(CLK) 
@@ -203,7 +229,7 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	 // Pipelined #4 : Normliza and get ready for Round Mantissa , Update Exponent
 	 
 	 PipeLinedStage4 Stage4 (
-    .ExponentBase(pipeExponentBase2), 
+    .ExponentBase(pipeResultExponent), 
     .EffCarry(pipeEffCarry), 
     .AdderResult(pipeAdderResult), 
     .NormShifts(pipeNormShifts), 

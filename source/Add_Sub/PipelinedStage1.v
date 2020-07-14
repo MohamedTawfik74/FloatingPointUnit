@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module PipelinedStage1( Operand1 , Operand2  , Operation , Exponent1 , Exponent2 , Mantissa1 , Mantissa2 ,
           OperandSign1 , OperandSign2 , Compare , EffOperation , Difference , 
-			 SignOfDifference , ZeroDifference
+			 SignOfDifference , ZeroDifference , MDExponent
     );
 	 
 	parameter DataSize     = 32 , // single percesion
@@ -45,6 +45,11 @@ module PipelinedStage1( Operand1 , Operand2  , Operation , Exponent1 , Exponent2
 	
 	output [ 1 : 0 ] Compare ;
 	output EffOperation ;	
+	
+	 // mul/div exponent 
+	 
+   output [ ExponentSize - 1 : 0 ]  MDExponent ; 
+	wire [ ExponentSize - 1 : 0 ] ExponentBase ;
 	 
 	 
 	 // get the difference of exponents to align the two operands
@@ -63,6 +68,16 @@ module PipelinedStage1( Operand1 , Operand2  , Operation , Exponent1 , Exponent2
     .Compare(Compare)
     );
 	 
+	 // first stage to get exponent of mul/div operation 
+	 
+	 Adder BaseAdder (
+    .Input1(Exponent2), 
+    .Input2(ExponentBase), 
+    .Output(MDExponent), 
+    .Carry() // the overflow is meaning less here (until now could be useful for exceptions later)
+    );
+
+	 
 	 // Partition Operand1
 	 assign Exponent1 = Operand1[ DataSize-2 : FractionSize ],
 		     Fraction1 = Operand1 [ FractionSize - 1 : 0 ] ,
@@ -77,5 +92,7 @@ module PipelinedStage1( Operand1 , Operand2  , Operation , Exponent1 , Exponent2
 			  
 	 	// get the effective operation
 	assign EffOperation =  Operation ^ OperandSign1 ^ OperandSign1 ;	
+	
+	assign ExponentBase = 8'b1000_0001 ; // tow's complement of 127 = Base 
 
 endmodule

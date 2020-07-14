@@ -13,8 +13,8 @@
 // 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module PipelinedStage2( Exponent1 , Exponent2 ,Mantissa1 , Mantissa2 , Compare , EffOperation , SignOfDifference , 
-                        ZeroDifference , Difference , ExponentBase , Adder1 , Adder2 
+module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa2 , Compare , EffOperation , SignOfDifference , 
+                        ZeroDifference , Difference , ExponentBase , Adder1 , Adder2 , MDFinalExponent
     );
 	 
     parameter DataSize     = 32 , // single percesion
@@ -30,18 +30,18 @@ module PipelinedStage2( Exponent1 , Exponent2 ,Mantissa1 , Mantissa2 , Compare ,
 	input [ 1 : 0 ] Compare ; // hold the compare state of two mantissas
 	input EffOperation ; // hold the effective operation
 	input [ ExponentSize - 4 : 0 ] Difference ; // hold the difference of the exponents and used for alignment
+	input [ ExponentSize - 1 : 0 ] MDExponent ; // the calculated exponent for mul/div
 	
 	output [ RoundingSize - 1 : 0 ] Adder1 , Adder2 ; // hold the inputs for the adder
 	output [ ExponentSize - 1  : 0 ] ExponentBase ; // hold the base exponent wich we get from the difference component
-	 // Internal nets
+	output [ ExponentSize - 1 : 0 ] MDFinalExponent ; // final exponent for mul/div  
+	
+	// Internal nets
 	 
 	wire [ MantissaSize - 1 : 0 ] swapedOperand1 , swapedOperand2 ;
 	wire Control1 , Control2 ;
-	
-	wire [ RoundingSize -  1 : 0 ] realOperand1 , realOperand2 ;
-	
-	wire [ RoundingSize - 1 : 0 ] Aligned ; 
-	
+	wire [ RoundingSize -  1 : 0 ]  realOperand2 ;
+	wire [ RoundingSize - 1 : 0 ]  Aligned , realOperand1 ;
 	wire [ ExponentSize - 1 : 0 ] ExponentBase ;
 	 
 	 // get the operands ready
@@ -60,7 +60,7 @@ module PipelinedStage2( Exponent1 , Exponent2 ,Mantissa1 , Mantissa2 , Compare ,
     .Control1(Control1), 
     .Control2(Control2)
     );
-	 
+
 	 // Alignment the lower mantissa
 	 RightBarrelShifter#(RoundingSize) AlignShifter (
     .Mantissa(realOperand1), 
@@ -84,11 +84,19 @@ module PipelinedStage2( Exponent1 , Exponent2 ,Mantissa1 , Mantissa2 , Compare ,
 	 
 	 // get the base exponent
 	  Mux_2_1#(ExponentSize) ExponentMux (
-    .Choice0(Exponent1), 
-    .Choice1(Exponent2), 
+    .Choice0(Exponent2), 
+    .Choice1(Exponent1), 
     .Sel(SignOfDifference), 
     .Output(ExponentBase)
     );
+	 
+	 Adder#(ExponentSize) FinalMDExponent (
+    .Input1(MDExponent), 
+    .Input2(Exponent1), 
+    .Output(MDFinalExponent), 
+    .Carry() // it's meaningless for now could be usful later for exceptions
+    );
+
 	 
 	 
 	 // add guard and round bit

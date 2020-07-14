@@ -27,7 +27,7 @@ module TestFPU;
 	// Inputs
 	reg [31:0] Operand1;
 	reg [31:0] Operand2;
-	reg Operation;
+	reg [ 2 : 0 ] Operation;
 	reg CLK;
 
 	// Outputs
@@ -54,7 +54,7 @@ module TestFPU;
        
 		Operand1 = 32'b01000110101111111100101000001010 ; // 12.5
 		Operand2 = 32'b01000010010010111110101110000101 ;  
-		Operation = 0; // add
+		Operation = 2'b00; // add
 		 
 		// Add stimulus here
 

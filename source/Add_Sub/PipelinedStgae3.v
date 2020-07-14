@@ -18,7 +18,8 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module PipelinedStgae3( Adder1 , Adder2 , EffOperation , EffCarry , AdderResult , NormShifts 
+module PipelinedStgae3( MDFinalExponent , ExponentBase , OpSel , Adder1 , Adder2 , EffOperation , 
+       EffCarry , AdderResult , NormShifts , ResultExponent
     );
 	 
 	 parameter DataSize     = 32 , // single percesion
@@ -29,10 +30,13 @@ module PipelinedStgae3( Adder1 , Adder2 , EffOperation , EffCarry , AdderResult 
 				  
 	  input [ RoundingSize - 1 : 0 ] Adder1 , Adder2 ; // Adder's inputs 
 	  input EffOperation ; // hold the executing iperation : help us to correct overflow 
+	  input [ ExponentSize - 1 : 0 ] MDFinalExponent , ExponentBase ; 
+	  input OpSel ; // hold to choose between mul/div = 1 or add/sub = 0
 	  
 	  output [ RoundingSize - 1 : 0 ] AdderResult ;// hold the addition result
 	  output EffCarry ; // old the correct carry of the addition
 	  output [ 4 : 0 ] NormShifts ; // hold required steps to normlize the result
+	  output [ ExponentSize - 1 : 0 ] ResultExponent ; // hold the chosen exponemt from add/sub or mul/div
 	 
 	  Adder#(RoundingSize) TwosCompAdder (
     .Input1(Adder1), 
@@ -44,7 +48,14 @@ module PipelinedStgae3( Adder1 , Adder2 , EffOperation , EffCarry , AdderResult 
 	 LZC ZerosCounter ( .AdderResult(AdderResult[RoundingSize-1 : 3 ] ) , .Shifts(NormShifts) 
     );
 	 
+	 Mux_2_1 ExponentMux ( // to choose exponemt from add/sub or mul/div
+    .Choice0(ExponentBase), 
+    .Choice1(MDFinalExponent), 
+    .Sel(OpSel), 
+    .Output(ResultExponent)
+    );
+	 
 	// get the effictive overflow from the Addition 
-	assign EffCarry = AdderCarry & (~EffOperation) ;
+	assign EffCarry = AdderCarry & (~EffOperation) & (~OpSel) ;
 
 endmodule
