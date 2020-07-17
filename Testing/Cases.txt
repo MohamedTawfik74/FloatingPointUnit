@@ -13,3 +13,8 @@
 100.25 + 828.05 // Passed
 42.025 + 2300.1 // Passed
 50.98 + 24549.02 // Passed
+
+// Multiplication 
+
+4 * 0.25 // Passed
+0.4 * 0.8 

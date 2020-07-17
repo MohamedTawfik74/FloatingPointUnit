@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    19:02:53 07/12/2020 
+// Create Date:    12:38:09 07/15/2020 
 // Design Name: 
-// Module Name:    FullAdder 
+// Module Name:    FA 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,28 +18,30 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module FullAdder( X , Y , Z , Sum , CarryOut
+module FA( A , B , Cin , Cout , Sum 
     );
 	 
-	 input Z ,Y , X ; 
-	 output Sum , CarryOut ;
-	 
+	 input A , B , Cin ;
+	 output Sum , Cout ; 
+
 	 wire InternalSum , InternalCarry1 , InternalCarry2 ;
 	 
-	 HalfAdder First (
-    .X(X), 
-    .Y(Y), 
+	 HA First (
+    .A(A), 
+    .B(B), 
     .Sum(InternalSum), 
-    .CarryOut(InternalCarry1)
+    .Cout(InternalCarry1)
     );
 	 
-	  HalfAdder Second (
-    .X(Z), 
-    .Y(InternalSum ), 
-    .Sum(InternalCarry2), 
-    .CarryOut(Sum)
+	  HA Second (
+    .A(Cin), 
+    .B(InternalSum ), 
+    .Sum(Sum), 
+    .Cout(InternalCarry2)
     );
 	 
-	 assign CarryOut = InternalCarry1 | InternalCarry2 ;
+	 assign Cout = InternalCarry1 | InternalCarry2 ;
+
+
 
 endmodule

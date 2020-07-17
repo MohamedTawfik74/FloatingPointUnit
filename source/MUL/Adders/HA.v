@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    18:59:53 07/12/2020 
+// Create Date:    12:36:20 07/15/2020 
 // Design Name: 
-// Module Name:    HalfAdder 
+// Module Name:    HA 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,14 +18,13 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module HalfAdder( X , Y , Sum , CarryOut 
+module HA( A , B , Sum , Cout 
     );
-	 
-	 input X , Y ; // input operands 
-	 output Sum , CarryOut ; // outputs
-	 
-	 assign Sum = X ^ Y ;
-	 assign CarryOut = X & Y ;
-
+	
+	input A , B ;
+	output Sum , Cout ;
+	
+	assign Sum = A ^ B ,
+			 Cout = A & B ;
 
 endmodule
