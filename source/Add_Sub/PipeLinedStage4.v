@@ -18,6 +18,9 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
+
+
+
 module PipeLinedStage4( MULResult , MULorADD , ExponentBase , EffCarry , AdderResult , NormShifts , TobeRounded , 
                         Round  , NewExponent1 , EffExponentAdderCarry1
     );

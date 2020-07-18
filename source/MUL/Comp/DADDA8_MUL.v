@@ -14,6 +14,10 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
+
+`include "./MUL/Comp/HA.v"
+`include "./MUL/Comp/FA.v"
+
 module DADDA8_MUL (A, B, Result
  );
 input [7:0] A;
