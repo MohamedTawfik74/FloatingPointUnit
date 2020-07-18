@@ -15,7 +15,7 @@
 50.98 + 24549.02 // Passed
 525 + 472 // Passed
 
-// Multiplication 
+// Multiplication : Range (3.40282346639e+38)
 
 4 * 0.25 // Passed
 0.4 * 0.8 // Rounding Error
@@ -24,3 +24,11 @@
 0.02 * 0.72 // Rounding Error
 6 * 8 // Passed
 250 * 0.02 // Passed
+16777215 * 16777215 // Out of Range
+16777215 * 1 // Passed : Full range
+2 * 16777215  // Passed
+40 * 16777215  // Passed
+200 * 16777215  // Passed
+16777215 * 16777215  // Passed
+162637.9392* 83847.022 // Passed
+16482.7372 * 84848.463 // Rounding Error

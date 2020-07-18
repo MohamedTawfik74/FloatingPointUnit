@@ -33,7 +33,7 @@ module TestFPU;
 	// Outputs
 	wire [31:0] Result;
 	
-	integer j , RoundError , Expected ;
+	integer Expected ;
 
 	// Instantiate the Unit Under Test (UUT)
 	FPU uut (
@@ -47,15 +47,15 @@ module TestFPU;
 	initial begin
 		// Initialize Inputs
 		CLK = 0;
-		RoundError = 1 ;
+		 
 
 		// Wait 100 ns for global reset to finish
 		#100;
        
-		Operand1 = 32'b01000011011110100000000000000000 ; // 12.5
-		Operand2 = 32'b00111100101000111101011100001010 ;  
+		Operand1 = 32'b01000110100000001100010101111001 ; 
+		Operand2 = 32'b01000111101001011011100000111011 ;  
 		Operation = 2'b10; // mul
-		Expected = 32'b01000000101000000000000000000000 ; 
+		Expected = 32'b01001110101001101011011111100110 ; 
 		// Add stimulus here
 
 	end
@@ -72,15 +72,7 @@ module TestFPU;
 				$display( "Output Matched" ) ;
 			else 
 				begin 
-					RoundError = 1 ;
-					for ( j = 31 ; j > 0 ; j = j - 1 )
-						begin 
-							if ( Result[j] !== Expected[j] )
-								begin 
-									RoundError = 0 ;
-								end
-						end
-					if ( RoundError === 1 ) 
+					if ( (Result - Expected) === 1 || (Result - Expected) === (-1) ) 
 						$display( "Rounding Error" ) ;
 					else 
 						$display( "Output Dismatch" ) ;
