@@ -13,8 +13,14 @@
 100.25 + 828.05 // Passed
 42.025 + 2300.1 // Passed
 50.98 + 24549.02 // Passed
+525 + 472 // Passed
 
 // Multiplication 
 
 4 * 0.25 // Passed
-0.4 * 0.8 
+0.4 * 0.8 // Rounding Error
+0.45 * 100 // Passed
+7.8 * 55.6 // Passed
+0.02 * 0.72 // Rounding Error
+6 * 8 // Passed
+250 * 0.02 // Passed

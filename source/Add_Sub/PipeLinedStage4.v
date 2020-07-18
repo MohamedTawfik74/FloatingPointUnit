@@ -18,9 +18,6 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-
-
-
 module PipeLinedStage4( MULResult , MULorADD , ExponentBase , EffCarry , AdderResult , NormShifts , TobeRounded , 
                         Round  , NewExponent1 , EffExponentAdderCarry1
     );
@@ -53,6 +50,8 @@ module PipeLinedStage4( MULResult , MULorADD , ExponentBase , EffCarry , AdderRe
 	 wire ExponentAdderCarry1 ;
 	 wire StickyBit ;
 	 wire RoundADD , RoundMUL ;
+	 
+	 wire [ ExponentSize - 1  : 0 ]  ExponentMUL , ExponentUpdateSel ;
 	 
 	 // normalize
 	 
@@ -113,9 +112,16 @@ module PipeLinedStage4( MULResult , MULorADD , ExponentBase , EffCarry , AdderRe
     .Carry(ExponentAdderCarry1)
     );
 	 
+	 Adder#(ExponentSize) ExponentMUL1 ( // first update of Exponent
+    .Input1(ExponentBase), 
+    .Input2(ExponentUpdateSel), 
+    .Output(ExponentMUL), 
+    .Carry() // to be disscused later to handle exceptions 
+    );
+	 
 	  Mux_2_1#(ExponentSize) ExponentMux ( // Mantissa + Guard + Round + Sticky
     .Choice0(ExponentAdderResult1), 
-    .Choice1(ExponentBase), 
+    .Choice1(ExponentMUL), 
     .Sel(MULorADD), 
     .Output(NewExponent1)
     );
@@ -125,5 +131,7 @@ module PipeLinedStage4( MULResult , MULorADD , ExponentBase , EffCarry , AdderRe
 	  
 	 assign UpdateExponet  = EffCarry ? 8'b00001 : (- { 3'b000 , NormShifts} )  ; // get the normlized 
 	 assign EffExponentAdderCarry1 = ExponentAdderCarry1 & EffCarry & (~MULorADD) ; // correct the overflow 
+	 
+	 assign ExponentUpdateSel = { 7'b0 , MULResult[47] } ;
 
 endmodule
