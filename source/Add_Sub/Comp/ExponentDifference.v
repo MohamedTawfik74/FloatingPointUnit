@@ -29,12 +29,12 @@ module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign , ZeroFlag
 		begin : GET_D_SignOfD
 			if ( Exponent2 > Exponent1 )
 				begin : NEG_OPERATION
-					Sign = 1 ; // negative sign
+					Sign = 0 ; // negative sign
 					Difference = Exponent2 - Exponent1 ;
 				end 
 			else 
 				begin : POS_OR_ZERO_OPERATION
-					Sign = 0 ; // positive sign 
+					Sign = 1 ; // positive sign 
 					Difference = Exponent1 - Exponent2 ;
 				end
 			end 
