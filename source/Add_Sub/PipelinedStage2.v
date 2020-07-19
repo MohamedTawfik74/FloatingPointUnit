@@ -13,7 +13,6 @@
 // 
 //
 //////////////////////////////////////////////////////////////////////////////////
-
 module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa2 , Compare , EffOperation , SignOfDifference , 
                         ZeroDifference , Difference , ExponentBase , Adder1 , Adder2 , MDFinalExponent
     );

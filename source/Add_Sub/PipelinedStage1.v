@@ -18,7 +18,6 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-
 module PipelinedStage1( Operand1 , Operand2  , Operation , Exponent1 , Exponent2 , Mantissa1 , Mantissa2 ,
           OperandSign1 , OperandSign2 , Compare , EffOperation , Difference , 
 			 SignOfDifference , ZeroDifference , MDExponent

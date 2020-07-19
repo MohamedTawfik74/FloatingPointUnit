@@ -18,7 +18,6 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-
 module PipelinedStgae3( MDFinalExponent , ExponentBase , OpSel , Adder1 , Adder2 , EffOperation , 
        EffCarry , AdderResult , NormShifts , ResultExponent
     );

@@ -12,41 +12,6 @@
 // Description: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-
-`include "./Add_Sub/register.v"
-
-`include "./MUL/MULStage1.v"
-`include "./MUL/MULStage2.v"
-`include "./MUL/MULStage3.v"
-
-`include "./Add_Sub/PipelinedStage1.v"
-`include "./Add_Sub/PipelinedStage2.v"
-`include "./Add_Sub/PipelinedStgae3.v"
-`include "./Add_Sub/PipeLinedStage4.v"
-`include "./Add_Sub/PipelinedStage5.v"
-
-`include "./MUL/Comp/DADDA8_MUL.v"
-
-`include "./Add_Sub/Comp/Mux_2_1.v"
-`include "./Add_Sub/Comp/Adder.v"
-
-`include "./Add_Sub/Comp/RoundControl.v"
-`include "./Add_Sub/Comp/LeftBarrelShifter.v"
-`include "./MUL/Comp/getMULSticky.v"
-
-`include "./Add_Sub/Comp/SwapComponent.v"
-`include "./Add_Sub/Comp/BitInvertControl.v"
-`include "./Add_Sub/Comp/RightBarrelShifter.v"
-`include "./Add_Sub/Comp/Conditional_Bit_Inverter.v"
-
-`include "./Add_Sub/Comp/ExponentDifference.v"
-`include "./Add_Sub/Comp/CompareComponent.v"
-
-`include "./Add_Sub/Comp/LZC.v"
-`include "./Add_Sub/Comp/NLC.v"
-
-`include "./Add_Sub/Comp/roundAdder.v"
-
 module FPU( Operand1 , Operand2 , Operation , Result , CLK 
     );
 	 
