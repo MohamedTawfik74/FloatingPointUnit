@@ -41,7 +41,7 @@ module PipelinedStage1( Operand1 , Operand2  , Operation , Exponent1 , Exponent2
 	output OperandSign1 , OperandSign2 ; 
 	
 	// Exponet Differenece Nets
-	output [ExponentSize - 1 : 0 ] Difference ; 
+	output [ 4 : 0 ] Difference ; 
 	output SignOfDifference , ZeroDifference ;
 	
 	output [ 1 : 0 ] Compare ;

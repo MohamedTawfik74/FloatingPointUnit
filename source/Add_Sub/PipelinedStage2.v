@@ -30,7 +30,7 @@ module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa
 	input ZeroDifference ; // indicate that the exponents are equal : help us in inverting 
 	input [ 1 : 0 ] Compare ; // hold the compare state of two mantissas
 	input EffOperation ; // hold the effective operation
-	input [ ExponentSize - 4 : 0 ] Difference ; // hold the difference of the exponents and used for alignment
+	input [ 4 : 0 ] Difference ; // hold the difference of the exponents and used for alignment
 	input [ ExponentSize - 1 : 0 ] MDExponent ; // the calculated exponent for mul/div
 	
 	output [ RoundingSize - 1 : 0 ] Adder1 , Adder2 ; // hold the inputs for the adder

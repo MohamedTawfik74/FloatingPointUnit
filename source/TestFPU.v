@@ -33,10 +33,10 @@ module TestFPU;
 	// Outputs
 	wire [31:0] Result;
 	
-	reg [ 31 : 0 ]  Expected [ 0 : 9 ] ;
-	reg [ 31 : 0 ] Operand1File [ 0 : 9 ] ;
-	reg [ 31 : 0 ] Operand2File [ 0 : 9 ] ;
-	reg [ 31 : 0 ] OperationsFile [ 0 : 9 ] ;
+	reg [ 31 : 0 ]  Expected [ 0 : 499 ] ;
+	reg [ 31 : 0 ] Operand1File [ 0 : 499 ] ;
+	reg [ 31 : 0 ] Operand2File [ 0 : 499 ] ;
+	reg [ 31 : 0 ] OperationsFile [ 0 : 499 ] ;
 	integer Resultsfile ;
 	integer num , counter , outc ;
 	
@@ -66,7 +66,7 @@ module TestFPU;
 		// Wait 100 ns for global reset to finish
 		#100;
 		
-		for ( counter = 0 ; counter < 10 ; counter = counter + 1 ) 
+		for ( counter = 0 ; counter < 500 ; counter = counter + 1 ) 
 			begin 
 				Operand1 = Operand1File[counter] ; 
 				Operand2 = Operand2File[counter] ;  
@@ -98,7 +98,7 @@ module TestFPU;
 					if ( (Result - Expected[outc]) === 1 || (Result - Expected[outc]) === (-1) ) 
 						$fdisplay( Resultsfile ,"Rounding Error" ) ;
 					else 
-						$fdisplay( Resultsfile , "Output Dismatch" ) ;
+						$fdisplay( Resultsfile , "Output Dismatch %b -- %b " , Result , Expected[outc] ) ;
 				end
 			outc = outc + 1 ;
 		end

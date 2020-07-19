@@ -1,3 +1,5 @@
+./GenCases.sh
+
 cp TestCases ./Testing
 cd Testing
 rm Operand1
