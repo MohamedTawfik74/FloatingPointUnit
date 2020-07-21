@@ -1,4 +1,4 @@
-##./GenCases.sh
+./GenCases.sh
 
 cp TestCases ./Testing
 cd Testing
@@ -29,3 +29,4 @@ iverilog -o FPU TestFPU.v FPU.v
 vvp FPU
 cp Results .. 
 
+ sed '1,500p;d' TestCases > Passed
