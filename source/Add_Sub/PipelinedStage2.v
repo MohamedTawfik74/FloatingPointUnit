@@ -55,7 +55,7 @@ module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa
     );
     
     LeftBarrelShifter#(MantissaSize) getStickyShifter ( 
-       .Mantissa(Mantissa1) , 
+       .Mantissa(swapedOperand1) , 
        .Shifts(NDifference) , 
        .Aligned(DiscardBits) 
     );
