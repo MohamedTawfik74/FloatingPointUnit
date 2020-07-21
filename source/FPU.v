@@ -48,6 +48,9 @@
 
 `include "./Add_Sub/Comp/roundAdder.v"
 
+`include "./MUL/Comp/HA.v"
+`include "./MUL/Comp/FA.v"
+
 module FPU( Operand1 , Operand2 , Operation , Result , CLK 
     );
 	 

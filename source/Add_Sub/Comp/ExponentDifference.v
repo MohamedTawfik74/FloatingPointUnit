@@ -24,7 +24,7 @@ module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign , ZeroFlag 
 	 reg Sign ;  // 0 -> + , 1 -> -
 	 output ZeroFlag ; // indicate if the both exponets are equal.
 	 
-	 reg [  ExponentSize - 4 : 0 ] preDiffer ;
+	 reg [  ExponentSize - 1 : 0 ] preDiffer ;
 	 reg [ ExponentSize - 4 : 0 ] npreDiffer ;
 	 wire DifferControl ;
 	 
@@ -56,11 +56,12 @@ module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign , ZeroFlag 
     );
     			
 	Mux_2_1#(ExponentSize - 3 ) ControlDifferMux (
-    .Choice0(preDiffer), 
+    .Choice0(preDiffer[4:0]), 
     .Choice1(5'b11011), 
     .Sel(DifferControl), 
     .Output(Difference)
     );
+	 
     Mux_2_1#(ExponentSize - 3 ) ControlnDifferMux (
     .Choice0(preNDifference), 
     .Choice1(5'b00010), 
