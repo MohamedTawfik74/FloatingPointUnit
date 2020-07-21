@@ -19,8 +19,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module PipelinedStage1( Operand1 , Operand2  , Operation , Exponent1 , Exponent2 , Mantissa1 , Mantissa2 ,
-          OperandSign1 , OperandSign2 , Compare , EffOperation , Difference , 
-			 SignOfDifference , ZeroDifference , MDExponent
+          OperandSign1 , OperandSign2 , Compare , EffOperation , Difference , NDifference ,
+			 SignOfDifference , ZeroDifference , MDExponent 
     );
 	 
 	parameter DataSize     = 32 , // single percesion
@@ -40,7 +40,7 @@ module PipelinedStage1( Operand1 , Operand2  , Operation , Exponent1 , Exponent2
 	output OperandSign1 , OperandSign2 ; 
 	
 	// Exponet Differenece Nets
-	output [ExponentSize - 4 : 0 ] Difference ; 
+	output [ExponentSize - 4 : 0 ] Difference , NDifference ; 
 	output SignOfDifference , ZeroDifference ;
 	
 	output [ 1 : 0 ] Compare ;
@@ -58,7 +58,8 @@ module PipelinedStage1( Operand1 , Operand2  , Operation , Exponent1 , Exponent2
     .Exponent2(Exponent2), 
     .Difference(Difference), 
     .Sign(SignOfDifference),
-	 .ZeroFlag(ZeroDifference)
+	 .ZeroFlag(ZeroDifference),
+	 .NDifference(NDifference)
     );
 	 
 	 // indicate the lowest Mantissa

@@ -13,7 +13,7 @@
 //              this block helps us to do the alignment stage.
 //
 //////////////////////////////////////////////////////////////////////////////////
-module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign , ZeroFlag
+module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign , ZeroFlag , NDifference
     );
 	 
 	 parameter ExponentSize =  8 ; // the size of exponent different form half, single or double percesion
@@ -24,8 +24,13 @@ module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign , ZeroFlag
 	 reg Sign ;  // 0 -> + , 1 -> -
 	 output ZeroFlag ; // indicate if the both exponets are equal.
 	 
-	 reg [  ExponentSize - 1 : 0 ] preDiffer ;
+	 reg [  ExponentSize - 4 : 0 ] preDiffer ;
+	 reg [ ExponentSize - 4 : 0 ] npreDiffer ;
 	 wire DifferControl ;
+	 
+	 wire [ 4 : 0 ] preNDifference ;
+	 output [4 : 0 ] NDifference ;
+	 wire nDifferControl ;
 	 
 	 always @( Exponent1 or Exponent2 ) 
 		begin : GET_D_SignOfD
@@ -33,23 +38,39 @@ module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign , ZeroFlag
 				begin : NEG_OPERATION
 					Sign = 0 ; // negative sign
 					preDiffer = Exponent2 - Exponent1 ;
+					npreDiffer = - preDiffer ;
 				end 
 			else 
 				begin : POS_OR_ZERO_OPERATION
 					Sign = 1 ; // positive sign 
 					preDiffer = Exponent1 - Exponent2 ;
+					npreDiffer = - preDiffer ;
 				end
 			end 
 			
-			
+    Adder#(5) NegAdderDiffer (
+    .Input1(npreDiffer),
+    .Input2(5'b11010),
+    .Output(preNDifference),
+    .Carry() 
+    );
+    			
 	Mux_2_1#(ExponentSize - 3 ) ControlDifferMux (
-    .Choice0(preDiffer[4:0]), 
+    .Choice0(preDiffer), 
     .Choice1(5'b11011), 
     .Sel(DifferControl), 
     .Output(Difference)
     );
+    Mux_2_1#(ExponentSize - 3 ) ControlnDifferMux (
+    .Choice0(preNDifference), 
+    .Choice1(5'b00010), 
+    .Sel(nDifferControl), 
+    .Output(NDifference)
+    );
+	 
 			
-	assign ZeroFlag = Difference ? 1'b0 : 1'b1 ,
-		    DifferControl	= preDiffer[5] | preDiffer[6] | preDiffer[7] ;
+	assign ZeroFlag = Difference ? 1'b0 : 1'b1 ;
+	assign DifferControl	= preDiffer[5] | preDiffer[6] | preDiffer[7] | ( preDiffer[4] & preDiffer[3] & preDiffer[2] ) ;
+	assign nDifferControl  = preDiffer[5] | preDiffer[6] | preDiffer[7] | ( preDiffer[4] & preDiffer[3] & ( preDiffer[2] | preDiffer[1] | preDiffer[0] ) ) ;
 	
 endmodule

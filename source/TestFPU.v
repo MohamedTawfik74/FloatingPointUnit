@@ -38,8 +38,9 @@ module TestFPU;
 	reg [ 31 : 0 ] Operand2File [ 0 : 499 ] ;
 	reg [ 31 : 0 ] OperationsFile [ 0 : 499 ] ;
 	integer Resultsfile ;
-	integer num , counter , outc ;
-	
+	integer counter , outc ;
+	integer numR , numM , numD ;
+
 	integer bypass ;
 	
 
@@ -62,7 +63,10 @@ module TestFPU;
 		$readmemb("Operand1", Operand1File );
 		$readmemb("Operand2", Operand2File);
 		$readmemh("Operations" , OperationsFile);
-
+		numR = 0 ; // number of rounding error outputs
+		numM = 0 ; // number of Matched outputs
+		numD = 0 ; // number of DisMatch outputs
+		
 		// Wait 100 ns for global reset to finish
 		#100;
 		
@@ -75,7 +79,12 @@ module TestFPU;
 			end
 		
 		// Add stimulus here
+		
 		#800; 
+		
+		$fdisplay( Resultsfile ,"Number of Rounding Errors = %d " , numR ) ;
+		$fdisplay( Resultsfile ,"Number of Matched Outputs = %d " , numM ) ;
+		$fdisplay( Resultsfile ,"Number of Dismatched Outputs = %d" , numD ) ;
 		
 		$finish;
 
@@ -92,13 +101,22 @@ module TestFPU;
 		if ( bypass !== 0 )
 		begin
 			if ( Result === Expected[outc] )
-				$fdisplay( Resultsfile , "Output Matched" ) ;
+				begin 
+					$fdisplay( Resultsfile , "Output Matched" ) ;
+					numM = numM + 1 ;
+				end
 			else 
 				begin 
 					if ( (Result - Expected[outc]) === 1 || (Result - Expected[outc]) === (-1) ) 
-						$fdisplay( Resultsfile ,"Rounding Error" ) ;
+						begin
+							$fdisplay( Resultsfile ,"Rounding Error" ) ;
+							numR = numR + 1 ;
+						end
 					else 
-						$fdisplay( Resultsfile , "Output Dismatch %b -- %b " , Result , Expected[outc] ) ;
+						begin
+							$fdisplay( Resultsfile , "Output Dismatch %b -- %b " , Result , Expected[outc] ) ;
+							numD = numD + 1 ;
+						end
 				end
 			outc = outc + 1 ;
 		end

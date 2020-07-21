@@ -35,6 +35,7 @@
 `include "./MUL/Comp/getMULSticky.v"
 
 `include "./Add_Sub/Comp/SwapComponent.v"
+`include "./Add_Sub/Comp/getStickyADD.v"
 `include "./Add_Sub/Comp/BitInvertControl.v"
 `include "./Add_Sub/Comp/RightBarrelShifter.v"
 `include "./Add_Sub/Comp/Conditional_Bit_Inverter.v"
@@ -90,9 +91,9 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	wire [ 15 : 0 ] pipeResult31 , pipeResult32 , pipeResult33  ;
 	
 	// Exponet Differenece Nets
-	wire [4 : 0 ] Difference ; 
+	wire [4 : 0 ] Difference , NDifference ; 
 	wire SignOfDifference , ZeroDifference ;
-	wire [4 : 0 ] pipeDifference ; 
+	wire [4 : 0 ] pipeDifference , pipeNDifference ; 
 	wire pipeSignOfDifference , pipeZeroDifference ;
 	
 	wire [ 1 : 0 ] Compare ;
@@ -165,7 +166,8 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
     .OperandSign2(OperandSign2), 
     .Compare(Compare), 
     .EffOperation(EffOperation), 
-    .Difference(Difference), 
+    .Difference(Difference),
+    .NDifference(NDifference), 
     .SignOfDifference(SignOfDifference), 
     .ZeroDifference(ZeroDifference),
 	 .MDExponent(MDExponent)
@@ -238,6 +240,9 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	 register#(5) DifferenceReg ( .D(Difference) , .Q(pipeDifference) , .CLK(CLK) 
 	 );
 	 
+	 register#(5) NDifferenceReg ( .D(NDifference) , .Q(pipeNDifference) , .CLK(CLK) 
+	 );
+	 
 	 register SignOfDifference1Reg ( .D(SignOfDifference) , .Q(pipeSignOfDifference) , .CLK(CLK) 
 	 );
 	 
@@ -262,7 +267,8 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
     .EffOperation(pipeEffOperation), 
     .SignOfDifference(pipeSignOfDifference), 
     .ZeroDifference(pipeZeroDifference), 
-    .Difference(pipeDifference), 
+    .Difference(pipeDifference),
+    .NDifference(pipeNDifference), 
     .ExponentBase(ExponentBase), 
     .Adder1(Adder1), 
     .Adder2(Adder2),

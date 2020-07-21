@@ -1,4 +1,4 @@
-./GenCases.sh
+##./GenCases.sh
 
 cp TestCases ./Testing
 cd Testing

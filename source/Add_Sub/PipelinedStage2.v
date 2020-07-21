@@ -15,7 +15,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa2 , Compare , EffOperation , SignOfDifference , 
-                        ZeroDifference , Difference , ExponentBase , Adder1 , Adder2 , MDFinalExponent
+                        ZeroDifference , Difference , NDifference , ExponentBase , Adder1 , Adder2 , MDFinalExponent
     );
 	 
     parameter DataSize     = 32 , // single percesion
@@ -30,7 +30,7 @@ module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa
 	input ZeroDifference ; // indicate that the exponents are equal : help us in inverting 
 	input [ 1 : 0 ] Compare ; // hold the compare state of two mantissas
 	input EffOperation ; // hold the effective operation
-	input [ 4 : 0 ] Difference ; // hold the difference of the exponents and used for alignment
+	input [ 4 : 0 ] Difference , NDifference ; // hold the difference of the exponents and used for alignment
 	input [ ExponentSize - 1 : 0 ] MDExponent ; // the calculated exponent for mul/div
 	
 	output [ RoundingSize - 1 : 0 ] Adder1 , Adder2 ; // hold the inputs for the adder
@@ -39,10 +39,10 @@ module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa
 	
 	// Internal nets
 	 
-	wire [ MantissaSize - 1 : 0 ] swapedOperand1 , swapedOperand2 ;
-	wire Control1 , Control2 ;
-	wire [ RoundingSize -  1 : 0 ]  realOperand2 ;
-	wire [ RoundingSize - 1 : 0 ]  Aligned , realOperand1 ;
+	wire [ MantissaSize - 1 : 0 ] swapedOperand1 , swapedOperand2 , DiscardBits ;
+	wire Control1 , Control2 , StickyBit ;
+	wire [ RoundingSize -  2 : 0 ] preAligned , realOperand1 ;
+	wire [ RoundingSize - 1 : 0 ]  Aligned , realOperand2 ;
 	wire [ ExponentSize - 1 : 0 ] ExponentBase ;
 	 
 	 // get the operands ready
@@ -52,6 +52,17 @@ module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa
     .Sel(SignOfDifference), // indictae the samllest operand by the sign of difference
     .Output1(swapedOperand1), 
     .Output2(swapedOperand2)
+    );
+    
+    LeftBarrelShifter#(MantissaSize) getStickyShifter ( 
+       .Mantissa(Mantissa1) , 
+       .Shifts(NDifference) , 
+       .Aligned(DiscardBits) 
+    );
+    
+    getStickyADD CalcSticky ( 
+    .DiscardBits(DiscardBits) , 
+    .StickyBit(StickyBit) 
     );
 	 
 	  BitInvertControl InvControl (  // generate the inerting control signal
@@ -63,10 +74,10 @@ module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa
     );
 
 	 // Alignment the lower mantissa
-	 RightBarrelShifter#(RoundingSize) AlignShifter (
+	 RightBarrelShifter#(RoundingSize-1) AlignShifter (
     .Mantissa(realOperand1), 
     .Shifts(Difference[4:0]), 
-    .Aligned(Aligned)
+    .Aligned(preAligned)
     );
 	 
 	 // align Path
@@ -101,7 +112,8 @@ module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa
 	 
 	 
 	 // add guard and round bit
-	assign realOperand1 = {swapedOperand1 , 3'b000 } ,
+	assign realOperand1 = {swapedOperand1 , 2'b00 } ,
+		Aligned = { preAligned , StickyBit } , 
 		    realOperand2 = {swapedOperand2 , 3'b000 } ;
 
 endmodule
