@@ -378,7 +378,7 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
     .MULResult(MULResult)
     );
 	 
-	 SignStage3 instance_name (
+	 SignStage3 SignThirdStage (
     .ADDSign(pipeADDSign), 
     .MULSign(pipeExclusiveSign2), 
     .AlgorSel(pipeAlgorSel), 
