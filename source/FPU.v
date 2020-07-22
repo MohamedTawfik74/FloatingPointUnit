@@ -81,7 +81,7 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	
 	wire [ ExponentSize - 1 : 0 ] Exponent1 , Exponent2 ; 
 	wire [ MantissaSize - 1 : 0 ] Mantissa1 , Mantissa2 ; 
-	wire OperandSign1 , OperandSign2 ; 
+//	wire OperandSign1 , OperandSign2 ; 
 	
 	wire [ ExponentSize - 1 : 0 ] pipeExponent1 , pipeExponent2 ;
 	wire [ MantissaSize - 1 : 0 ] pipeMantissa1 , pipeMantissa2 ; 
@@ -248,10 +248,10 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
     register#(ExponentSize) Exponent2Reg ( .D(Exponent2) , .Q(pipeExponent2) , .CLK(CLK)
     );
 	 
- 	 register OperandSign1Reg ( .D(OperandSign1) , .Q(pipeOperandSign1) , .CLK(CLK) 
+ 	 register OperandSign1Reg ( .D(pipeOperand1[31]) , .Q(pipeOperandSign1) , .CLK(CLK) 
 	 );
 	 
-	 register OperandSign2Reg ( .D(OperandSign2) , .Q(pipeOperandSign2) , .CLK(CLK) 
+	 register OperandSign2Reg ( .D(pipeOperand2[31]) , .Q(pipeOperandSign2) , .CLK(CLK) 
 	 );
 	 register AlgorthimSelReg1 ( .D(pipeOperation[1]) , .Q(AlgorSel) , .CLK(CLK) 
 	 );
