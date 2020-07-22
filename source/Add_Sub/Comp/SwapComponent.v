@@ -31,13 +31,13 @@ module SwapComponent( Mantissa1 , Mantissa2 , Sel , Output1 , Output2
 		begin 
 			if ( Sel == 1'b1 )
 				begin 
-					Output1 = Mantissa2 ;
-					Output2 = Mantissa1 ;
+					Output1 = Mantissa1 ;
+					Output2 = Mantissa2 ;
 				end 
 			else 
 				begin
-					Output1 = Mantissa1 ;
-					Output2 = Mantissa2 ;
+					Output1 = Mantissa2 ;
+					Output2 = Mantissa1 ;
 				end
 	   end
 	 
