@@ -33,6 +33,6 @@ module BitInvertControl( EffectiveOperation , ZeroD , Cmp , Control1 , Control2
     // in case of d is equal to zero, we need to depend on cmp signal and invert the less number as 
     // the both mantissa pass through the swap component 	 
 	 assign Control1 = EffectiveOperation & ( (~ZeroD) | Cmp[1] ) ,
-			  Control2 = EffectiveOperation & (   ZeroD & Cmp [0] ) ;
+			  Control2 = EffectiveOperation & (   ZeroD  & Cmp[0] ) ;
 
 endmodule

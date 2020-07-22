@@ -36,15 +36,15 @@ module ExponentDifference( Exponent1 , Exponent2 , Difference , Sign , ZeroFlag 
 		begin : GET_D_SignOfD
 			if ( Exponent2 > Exponent1 )
 				begin : NEG_OPERATION
-					Sign = 0 ; // negative sign
+					Sign = 1 ; // negative sign
 					preDiffer = Exponent2 - Exponent1 ;
-					npreDiffer = - preDiffer ;
+					npreDiffer = - preDiffer[4:0] ;
 				end 
 			else 
 				begin : POS_OR_ZERO_OPERATION
-					Sign = 1 ; // positive sign 
+					Sign = 0 ; // positive sign 
 					preDiffer = Exponent1 - Exponent2 ;
-					npreDiffer = - preDiffer ;
+					npreDiffer = - preDiffer[4:0] ;
 				end
 			end 
 			

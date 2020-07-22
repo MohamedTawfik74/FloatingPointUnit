@@ -96,8 +96,8 @@ module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa
 	 
 	 // get the base exponent
 	  Mux_2_1#(ExponentSize) ExponentMux (
-    .Choice0(Exponent2), 
-    .Choice1(Exponent1), 
+    .Choice0(Exponent1), 
+    .Choice1(Exponent2), 
     .Sel(SignOfDifference), 
     .Output(ExponentBase)
     );

@@ -51,6 +51,10 @@
 `include "./MUL/Comp/HA.v"
 `include "./MUL/Comp/FA.v"
 
+`include "./Sign/SignStage1.v"
+`include "./Sign/SignStage2.v"
+`include "./Sign/SignStage3.v"
+
 module FPU( Operand1 , Operand2 , Operation , Result , CLK 
     );
 	 
@@ -93,6 +97,8 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	wire [ 15 : 0 ] pipeResult21 , pipeResult22 , pipeResult23  ;
 	wire [ 15 : 0 ] pipeResult31 , pipeResult32 , pipeResult33  ;
 	
+	wire ExclusiveSign , pipeExclusiveSign , pipeExclusiveSign2 ;
+	
 	// Exponet Differenece Nets
 	wire [4 : 0 ] Difference , NDifference ; 
 	wire SignOfDifference , ZeroDifference ;
@@ -111,6 +117,8 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	
 	wire AlgorSel , pipeAlgorSel , pipeAlgorSel2 ;
 	
+	wire ADDSign , pipeADDSign ;
+	
 	wire [ 32 : 0 ] Result1 , Result2 , pipeResult1 , pipeResult2 ;
    wire [ 31 : 0 ] Result3 , pipeResult3 ;
    // pipelined #3 
@@ -121,6 +129,8 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	wire [ ExponentSize - 1 : 0 ] pipeResultExponent , ResultExponent ;
 	
 	wire [ 47 : 0 ] MULResult , pipeMULResult ;
+	
+	wire ResultSign , pipeResultSign , pipeResultSign2 , pipeResultSign3 ;
 	
 	// pipelined #4
 	
@@ -189,6 +199,15 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
     .Result32(Result32), 
     .Result33(Result33)
     );
+	 
+	 SignStage1 SignFirstStgae (
+    .SignOperandX(pipeOperand1[31]), 
+    .SignOperandY(pipeOperand2[31]), 
+    .ExclusiveSign(ExclusiveSign)
+    );
+	
+	register#(1) ExclusiveSignReg ( .D(ExclusiveSign) , .Q(pipeExclusiveSign) , .CLK(CLK)
+	);
 	
 	register#(16) Result11Reg ( .D(Result11) , .Q(pipeResult11) , .CLK(CLK)
     );
@@ -293,6 +312,23 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
     .Result3(Result3)
     );
 	 
+	 SignStage2 SignSecondStgae (
+    .SignOperandX(pipeOperandSign1), 
+    .SignOperandY(pipeOperandSign2), 
+    .EffOperation(pipeEffOperation), 
+    .ExclusiveSign(pipeExclusiveSign), 
+    .DSign(pipeSignOfDifference), 
+    .DZF(pipeZeroDifference), 
+    .CMP1(pipeCompare[1]), 
+    .ADDSign(ADDSign)
+    );
+	 
+	 register#(1) ExclusiveSignReg2 ( .D(pipeExclusiveSign) , .Q(pipeExclusiveSign2) , .CLK(CLK)
+	);
+	
+	 register#(1) ADDSignReg ( .D(ADDSign) , .Q(pipeADDSign) , .CLK(CLK)
+	);
+	
 	 register#(33) Result1Reg ( .D(Result1) , .Q(pipeResult1) , . CLK(CLK) 
 	 );
 	 
@@ -342,6 +378,13 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
     .MULResult(MULResult)
     );
 	 
+	 SignStage3 instance_name (
+    .ADDSign(pipeADDSign), 
+    .MULSign(pipeExclusiveSign2), 
+    .AlgorSel(pipeAlgorSel), 
+    .ResultSign(ResultSign)
+    );
+	 
 	 register#(48) MULResultReg ( .D(MULResult) , .Q(pipeMULResult) , .CLK(CLK)
     );
 	 
@@ -360,6 +403,9 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	 register AlgorthimSelReg3 ( .D(pipeAlgorSel) , .Q(pipeAlgorSel2) , .CLK(CLK) 
 	 );
 	 
+	  register#(1) ResultSignReg1 ( .D(ResultSign) , .Q(pipeResultSign) , .CLK(CLK) 
+	 );
+	 
 	 // Pipelined #4 : Normliza and get ready for Round Mantissa , Update Exponent
 	 
 	 PipeLinedStage4 Stage4 (
@@ -374,6 +420,9 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
     .NewExponent1(ExponentAdderResult1), 
     .EffExponentAdderCarry1(EffExponentAdderCarry1) 
     );
+	 
+	  register#(1) ResultSignReg2 ( .D(pipeResultSign) , .Q(pipeResultSign2) , .CLK(CLK) 
+	 );
 	 
 	 register#(MantissaSize) TobeRoundedReg ( .D(TobeRounded) , .Q(pipeTobeRounded) , .CLK(CLK)
     );
@@ -398,6 +447,9 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
     .ExponentAdderCarry2(ExponentAdderCarry2)
     );
 	 
+	 register#(1) ResultSignReg3 ( .D(pipeResultSign2) , .Q(pipeResultSign3) , .CLK(CLK) 
+	 );
+	 
 	 register#(FractionSize) FinalFractionReg ( .D(FinalFraction) , .Q(pipeFinalFraction) , .CLK(CLK)
     );
 	 
@@ -408,6 +460,6 @@ module FPU( Operand1 , Operand2 , Operation , Result , CLK
 	
 		 
 	// get result 
-	assign Result = {  1'b0 , pipeFinalExponent , pipeFinalFraction } ;
+	assign Result = {  pipeResultSign3 , pipeFinalExponent , pipeFinalFraction } ;
 	
 endmodule
