@@ -33,7 +33,7 @@ module BitInvertControl( EffectiveOperation , ZeroD , SignD , Cmp , Control1 , C
 	 // and the mantisssa in the other path will never be inverted whten d is not quale to zero
     // in case of d is equal to zero, we need to depend on cmp signal and invert the less number as 
     // the both mantissa pass through the swap component 	 
-	 assign Control2 = EffectiveOperation & ( (~ZeroD) | Cmp[1] ) & (~SignD) ,
-			  Control1 = ( EffectiveOperation & (   ZeroD  & Cmp[0] ) ) | (EffectiveOperation & SignD)  ;
+	 assign Control1 = EffectiveOperation & ( SignD | ((~SignD) & (~ZeroD)) | (ZeroD & Cmp[0])) ,
+			  Control2 = EffectiveOperation & ZeroD & Cmp[1]  ;
 
 endmodule
