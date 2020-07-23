@@ -69,6 +69,7 @@ module PipelinedStage2( MDExponent , Exponent1 , Exponent2 ,Mantissa1 , Mantissa
     .EffectiveOperation(EffOperation), 
     .ZeroD(ZeroDifference), 
     .Cmp(Compare), 
+	 .SignD(SignOfDifference),
     .Control1(Control1), 
     .Control2(Control2)
     );

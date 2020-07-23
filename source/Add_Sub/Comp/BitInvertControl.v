@@ -13,12 +13,13 @@
 //                Control which Mantissa will be inverted
 //
 //////////////////////////////////////////////////////////////////////////////////
-module BitInvertControl( EffectiveOperation , ZeroD , Cmp , Control1 , Control2
+module BitInvertControl( EffectiveOperation , ZeroD , SignD , Cmp , Control1 , Control2
     );
 	 
 	 input EffectiveOperation ; // hold the effictive operation 0 -> + , 1 -> -
 	 
 	 input ZeroD ; // hold the Zero Flag of exponent difference
+	 input SignD ; // hold the sign of the exponent difference
 	 
 	 input [ 1 : 0 ]Cmp ; // hold the case of Mantissas compare (Less|Greater)
 	 
@@ -32,7 +33,7 @@ module BitInvertControl( EffectiveOperation , ZeroD , Cmp , Control1 , Control2
 	 // and the mantisssa in the other path will never be inverted whten d is not quale to zero
     // in case of d is equal to zero, we need to depend on cmp signal and invert the less number as 
     // the both mantissa pass through the swap component 	 
-	 assign Control1 = EffectiveOperation & ( (~ZeroD) | Cmp[1] ) ,
-			  Control2 = EffectiveOperation & (   ZeroD  & Cmp[0] ) ;
+	 assign Control2 = EffectiveOperation & ( (~ZeroD) | Cmp[1] ) & (~SignD) ,
+			  Control1 = ( EffectiveOperation & (   ZeroD  & Cmp[0] ) ) | (EffectiveOperation & SignD)  ;
 
 endmodule
