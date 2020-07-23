@@ -29,4 +29,4 @@ iverilog -o FPU TestFPU.v FPU.v
 vvp FPU
 cp Results .. 
 
- sed '1,500p;d' TestCases > Passed
+ #sed '1,500p;d' TestCases > Passed

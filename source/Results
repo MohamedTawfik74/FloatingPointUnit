@@ -92,6 +92,7 @@ Output Matched
 Output Matched
 Output Matched
 Output Matched
+Output Dismatch 11001010101100111101111111000101 -- 11001010101100111101111111000111 
 Output Matched
 Output Matched
 Output Matched
@@ -100,6 +101,7 @@ Output Matched
 Output Matched
 Output Matched
 Output Matched
+Output Dismatch 11001011011010111110110111100100 -- 11001011011010111110110111100110 
 Output Matched
 Output Matched
 Output Matched
@@ -108,6 +110,7 @@ Output Matched
 Output Matched
 Output Matched
 Output Matched
+Output Dismatch 11001010001000110110000001011100 -- 11001010001000110110000001011110 
 Output Matched
 Output Matched
 Output Matched
@@ -116,6 +119,7 @@ Output Matched
 Output Matched
 Output Matched
 Output Matched
+Output Dismatch 11001010011111110100110110111110 -- 11001010011111110100110111000000 
 Output Matched
 Output Matched
 Output Matched
@@ -207,11 +211,13 @@ Output Matched
 Output Matched
 Output Matched
 Output Matched
+Output Dismatch 11001011000000001001001010100110 -- 11001011000000001001001010101000 
 Output Matched
 Output Matched
 Output Matched
 Output Matched
 Output Matched
+Output Dismatch 11001011000110111100111000111100 -- 11001011000110111100111000111110 
 Output Matched
 Output Matched
 Output Matched
@@ -357,6 +363,7 @@ Output Matched
 Output Matched
 Output Matched
 Output Matched
+Output Dismatch 11001010001110100101111101010111 -- 11001010001110100101111101011011 
 Output Matched
 Output Matched
 Output Matched
@@ -404,13 +411,7 @@ Output Matched
 Output Matched
 Output Matched
 Output Matched
-Output Matched
-Output Matched
-Output Matched
-Output Matched
-Output Matched
-Output Matched
-Output Matched
+Output Dismatch 11001010001110000111111001110000 -- 11001010001110000111111001110010 
 Output Matched
 Output Matched
 Output Matched
@@ -499,5 +500,5 @@ Output Matched
 Output Matched
 Output Matched
 Number of Rounding Errors =           0 
-Number of Matched Outputs =         500 
-Number of Dismatched Outputs =           0
+Number of Matched Outputs =         493 
+Number of Dismatched Outputs =           8

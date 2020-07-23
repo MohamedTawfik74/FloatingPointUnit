@@ -33,15 +33,13 @@ module TestFPU;
 	// Outputs
 	wire [31:0] Result;
 	
-	reg [ 31 : 0 ]  Expected [ 0 : 499 ] ;
-	reg [ 31 : 0 ] Operand1File [ 0 : 499 ] ;
-	reg [ 31 : 0 ] Operand2File [ 0 : 499 ] ;
-	reg [ 31 : 0 ] OperationsFile [ 0 : 499 ] ;
+	reg [ 31 : 0 ]  Expected [ 0 : 499999 ] ;
+	reg [ 31 : 0 ] Operand1File [ 0 : 499999 ] ;
+	reg [ 31 : 0 ] Operand2File [ 0 : 499999 ] ;
+	reg [ 31 : 0 ] OperationsFile [ 0 : 499999 ] ;
 	integer Resultsfile ;
 	integer counter , outc ;
 	integer numR , numM , numD ;
-
-	integer bypass ;
 	
 
 	// Instantiate the Unit Under Test (UUT)
@@ -56,8 +54,7 @@ module TestFPU;
 	initial begin
 		// Initialize Inputs
 		CLK = 0;
-		outc = 0 ;
-		bypass = 0; 
+		outc = 0;
 		$readmemb("expected",Expected);
 		Resultsfile  = $fopen("Results");
 		$readmemb("Operand1", Operand1File );
@@ -70,7 +67,7 @@ module TestFPU;
 		// Wait 100 ns for global reset to finish
 		#100;
 		
-		for ( counter = 0 ; counter < 500 ; counter = counter + 1 ) 
+		for ( counter = 0 ; counter < 500000 ; counter = counter + 1 ) 
 			begin 
 				Operand1 = Operand1File[counter] ; 
 				Operand2 = Operand2File[counter] ;  
@@ -98,8 +95,6 @@ module TestFPU;
 		
 	always @(Result) 
 		begin 
-		if ( bypass !== 0 )
-		begin
 			if ( Result === Expected[outc] )
 				begin 
 					$fdisplay( Resultsfile , "Output Matched" ) ;
@@ -119,9 +114,6 @@ module TestFPU;
 						end
 				end
 			outc = outc + 1 ;
-		end
-		else 
-			bypass = 1 ;
 		end
       
 endmodule

@@ -38,6 +38,9 @@ int main (int argc , char * argv[]) {
 	float fOperand2 ;
 	long iOperation ;
 	
+	char BracketFlag = 0  ;
+	char Sign =  1  ;
+	
 	char FetchedLine [100] = {'\0'};
 	char operandN = 1 ;
 	
@@ -81,36 +84,67 @@ int main (int argc , char * argv[]) {
 		for ( int i = 0 ; FetchedLine[i] != '\0' ; i++ ) {  // it should be partitioned into multiple sub-functions
 			
 			if( FetchedLine[i] == '+' ) {
-				iOperation = 0 ;
-				qOperation.Enqueue(iOperation) ;
-				operandN= 2 ;
-				fOperand1 = stof(sOperand1, NULL) ;
-				qOperand1.Enqueue(fOperand1);
+				if (BracketFlag == 1) {
+					Sign = -1 ;
+				}
+				else {
+					iOperation = 0 ;
+					qOperation.Enqueue(iOperation) ;
+					operandN= 2 ;
+					fOperand1 = stof(sOperand1, NULL) ;
+					qOperand1.Enqueue(Sign * fOperand1);
+					Sign = 1 ;
+				}
 			}
 			else if (FetchedLine[i] == '-') {
-				iOperation = 1 ;
-				qOperation.Enqueue(iOperation) ;
-				operandN= 2 ;
-				fOperand1 = stof(sOperand1, NULL) ;
-				qOperand1.Enqueue(fOperand1);
+				if (BracketFlag == 1) {
+					Sign = -1 ;
+				}
+				else {
+					iOperation = 1 ;
+					qOperation.Enqueue(iOperation) ;
+					operandN= 2 ;
+					fOperand1 = stof(sOperand1, NULL) ;
+					qOperand1.Enqueue(Sign * fOperand1);
+					Sign = 1 ;	
+				}
 			} 
 			else if (FetchedLine[i] == '*') {
-				iOperation = 2 ;
-				qOperation.Enqueue(iOperation) ;
-				operandN= 2 ;
-				fOperand1 = stof(sOperand1, NULL) ;
-				qOperand1.Enqueue(fOperand1);
+				if (BracketFlag == 1) {
+					Sign = -1 ;
+				}
+				else {
+					iOperation = 2 ;
+					qOperation.Enqueue(iOperation) ;
+					operandN= 2 ;
+					fOperand1 = stof(sOperand1, NULL) ;
+					qOperand1.Enqueue(Sign * fOperand1);
+					Sign = 1 ;
+				}
 			} 
 			else if (FetchedLine[i] == '/') {
-				iOperation = 3 ;
-				qOperation.Enqueue(iOperation) ;
-				operandN= 2 ;
-				fOperand1 = stof(sOperand1, NULL) ;
-				qOperand1.Enqueue(fOperand1);
+				if (BracketFlag == 1) {
+					Sign = -1 ;
+				}
+				else {
+					iOperation = 3 ;
+					qOperation.Enqueue(iOperation) ;
+					operandN= 2 ;
+					fOperand1 = stof(sOperand1, NULL) ;
+					qOperand1.Enqueue(Sign * fOperand1);
+					Sign = 1 ; 
+				}
 			}
 			else if (FetchedLine[i] == ';' ) {
 				fOperand2 = stof(sOperand2, NULL) ;
-				qOperand2.Enqueue(fOperand2);			
+				qOperand2.Enqueue(Sign*fOperand2);
+				Sign = 1 ;			
+			}
+			else if (FetchedLine[i] == '(' ) {
+				BracketFlag = 1 ;
+			}
+			else if (FetchedLine[i] == ')' ) {
+				BracketFlag = 0 ;
 			}
 			else {
 			
