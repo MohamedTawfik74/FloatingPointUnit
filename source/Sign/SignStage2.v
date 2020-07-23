@@ -56,7 +56,7 @@ module SignStage2( SignOperandX , SignOperandY , EffOperation , ExclusiveSign , 
 	 Mux_2_1#(1) DependMux (
     .Choice0(SignOperandX), 
     .Choice1(RealSignOperandY), 
-    .Sel(EffOperation), 
+    .Sel(DependSel), 
     .Output(DependSign)
     );
 	 
