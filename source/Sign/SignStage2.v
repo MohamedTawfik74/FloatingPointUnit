@@ -25,7 +25,7 @@ module SignStage2( SignOperandX , SignOperandY , EffOperation , ExclusiveSign , 
 	 
 	 input SignOperandX ; // hold the sign of first operand
 	 input SignOperandY ; // hold the sign of second operand
-	 
+	  
 	 input EffOperation ; //  hold the effictive operation 
 	 input ExclusiveSign ; // hold the MUL/DIv sign define if the operand have same or different signs
 	 
@@ -49,14 +49,14 @@ module SignStage2( SignOperandX , SignOperandY , EffOperation , ExclusiveSign , 
 	Mux_2_1#(1) YSignMux (
     .Choice0(SignOperandY), 
     .Choice1(ISignOperandY), 
-    .Sel(EffOperation), 
+    .Sel(PartSel), 
     .Output(RealSignOperandY)
     );
 	 
 	 Mux_2_1#(1) DependMux (
     .Choice0(SignOperandX), 
     .Choice1(RealSignOperandY), 
-    .Sel(DependSel), 
+    .Sel(EffOperation), 
     .Output(DependSign)
     );
 	 
