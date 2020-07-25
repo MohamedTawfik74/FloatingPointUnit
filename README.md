@@ -89,7 +89,8 @@ In third stage, we add all the previous results to get 48-bit result of multipli
 ![Stage3](https://user-images.githubusercontent.com/36772600/88459510-3b16fd00-ce96-11ea-9a72-310978ac3aa7.PNG)<br/>
 This design helps us to eliminate this critical path and the maximum frequency remain the same as the ADD/SUB circuit.
 
-**There are more tricks and details and it's very hard to caover all of them here so please if you need to ask about any thing send me an [email](muhamedtawfik@outlook.com).**<br/>
+**There are more tricks and details and it's very hard to cover all of them here so please if you need to ask about any thing send me an email.**<br/>
+**My email : muhamedtawfik@outlook.com**
 
 ## References
 [1] [Digital Arithmetic (The Morgan Kaufmann Series in Computer Architecture and Design) 1st Edition](https://www.amazon.com/Digital-Arithmetic-Kaufmann-Computer-Architecture/dp/1558607986).<br/>
