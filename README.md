@@ -71,7 +71,7 @@ This Rounding algorthim is required 3 additional bits while normalizing the smal
 Guard and Sticky bits are the first discarded bits while normlization and the Sticky bit is the OR of the other discarded bits.<br/>
 We use them to generate Round Control Signal as **Round = G(L+R+T)**.
 
-**Rounding has many algorithms so while testing it depends on which algorthim this hardware or site uses so we could found different in final result in rounding. This is case is coverd in test bench to tell us number of different rounding cases. In the end, this difference is neglectable.**
+**Rounding has many algorithms so while testing it depends on which algorthim this hardware or site uses so we could found different in final result in rounding. This case is coverd in test bench to tell us number of different rounding cases. In the end, this difference is neglectable.**
 
 ### 2. Multiplication Circuit
 
