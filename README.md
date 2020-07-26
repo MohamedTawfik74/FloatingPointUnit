@@ -83,11 +83,11 @@ The challange here how to do the multiplication as it's a critical path. We use 
 ![Part](https://user-images.githubusercontent.com/36772600/88459209-eecabd80-ce93-11ea-9bbe-f33924ba0cb9.PNG)<br/>
 We get the result of the multiplication for every two bytes in the first stage.<br/>
 ![First stage](https://user-images.githubusercontent.com/36772600/88459311-b081ce00-ce94-11ea-8f11-caea89c7ca8e.PNG)<br/>
-In the second stage, we add the results of mul. for the every block to get 22-bit result.<br/>
+In the second stage, we add the results of mul. for the every block to get 24-bit result.<br/>
 ![Stage2](https://user-images.githubusercontent.com/36772600/88459445-e7a4af00-ce95-11ea-9214-297663f094b1.PNG)<br/>
 In third stage, we add all the previous results to get 48-bit result of multiplication.<br/> 
 ![Stage3](https://user-images.githubusercontent.com/36772600/88459510-3b16fd00-ce96-11ea-9a72-310978ac3aa7.PNG)<br/>
-This design helps us to eliminate this critical path and the maximum frequency remain the same as the ADD/SUB circuit.
+This design helps us to eliminate this critical path and the maximum frequency remained the same as the ADD/SUB circuit.
 
 **There are more tricks and details and it's very hard to cover all of them here so please if you need to ask about any thing send me an email.**<br/>
 **My email : muhamedtawfik@outlook.com**
