@@ -77,7 +77,7 @@ We use them to generate Round Control Signal as **Round = G(L+R+T)**.
 
 The multiplication is performed as **Er = Ex+Ey**, **Sr= Sx ^ Sy** and **Mr = Mx * My**.<br/>
 
-The aligning step is useless here and the rounding step done as before. The Normlization here is shifting the result one right shift or none as the multiplication is performed between two operands ϵ [[1,2)].<br/>
+The aligning step is useless here and the rounding step done as before. The Normlization here is shifting the result one right shift or none as the multiplication is performed between two operands ϵ [1,2).<br/>
 
 The challange here how to do the multiplication as it's a critical path. We use DADDA 8-bit mutliplier and partition every operand into 3 blocks of 8 bits.<br/>
 ![Part](https://user-images.githubusercontent.com/36772600/88459209-eecabd80-ce93-11ea-9bbe-f33924ba0cb9.PNG)<br/>
