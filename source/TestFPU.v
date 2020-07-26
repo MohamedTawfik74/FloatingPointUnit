@@ -33,10 +33,10 @@ module TestFPU;
 	// Outputs
 	wire [31:0] Result;
 	
-	reg [ 31 : 0 ]  Expected [ 0 : 499999 ] ;
-	reg [ 31 : 0 ] Operand1File [ 0 : 499999 ] ;
-	reg [ 31 : 0 ] Operand2File [ 0 : 499999 ] ;
-	reg [ 31 : 0 ] OperationsFile [ 0 : 499999 ] ;
+	reg [ 31 : 0 ]  Expected [ 0 : 4999999 ] ;
+	reg [ 31 : 0 ] Operand1File [ 0 : 4999999 ] ;
+	reg [ 31 : 0 ] Operand2File [ 0 : 4999999 ] ;
+	reg [ 31 : 0 ] OperationsFile [ 0 : 4999999 ] ;
 	integer Resultsfile ;
 	integer counter , outc ;
 	integer numR , numM , numD ;
@@ -67,7 +67,7 @@ module TestFPU;
 		// Wait 100 ns for global reset to finish
 		#100;
 		
-		for ( counter = 0 ; counter < 500000 ; counter = counter + 1 ) 
+		for ( counter = 0 ; counter < 5000000 ; counter = counter + 1 ) 
 			begin 
 				Operand1 = Operand1File[counter] ; 
 				Operand2 = Operand2File[counter] ;  

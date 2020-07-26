@@ -22,11 +22,23 @@ cp Operand2 ../source
 cp Operations ../source
 cp expected ../source 
 
+#cp Operand1 ../postsynFPGA
+#cp Operand2 ../postsynFPGA
+#cp Operations ../postsynFPGA
+#cp expected ../postsynFPGA 
+
 cd .. 
 cd source
 
 iverilog -o FPU TestFPU.v FPU.v
 vvp FPU
-cp Results .. 
+cp Results ..
+
+#cd ..
+#cd postsynFPGA
+
+#iverilog -o FPU_synthesis TestFPU.v FPU_synthesis.v
+#vvp FPU_synthesis
+#cp postsynResults .. 
 
  #sed '1,500p;d' TestCases > Passed
