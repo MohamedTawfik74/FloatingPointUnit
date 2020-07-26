@@ -1,7 +1,7 @@
 rm TestCases 
 > TestCases
 
-declare -i NumOfCase=2000
+declare -i NumOfCase=20
 
 ## ADD
 
