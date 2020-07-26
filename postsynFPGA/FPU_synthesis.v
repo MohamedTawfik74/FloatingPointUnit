@@ -33,7 +33,10 @@
 
 `timescale 1 ns/1 ps
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> d86dc2848c890a0c5f24362146b71db9c4cff19c
 module FPU (
   CLK, Operand1, Operand2, Operation, Result
 );
