@@ -56,7 +56,7 @@ module TestFPU;
 		CLK = 0;
 		outc = 0;
 		$readmemb("expected",Expected);
-		Resultsfile  = $fopen("Results");
+		Resultsfile  = $fopen("postsynResults");
 		$readmemb("Operand1", Operand1File );
 		$readmemb("Operand2", Operand2File);
 		$readmemh("Operations" , OperationsFile);
