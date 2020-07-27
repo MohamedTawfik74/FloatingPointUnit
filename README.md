@@ -27,11 +27,11 @@ The operating frequency on SPARTAN6 Xilinx FPGA (xc6slx9-2tqg144) is up to **125
 
 1. source: contains the verilog files for the all components of the design. 
 
-2. Testing: contains C++ code which helps us to generate input for the testing of the design.
+2. Testing: contains C++ code which helps us in generating input to the testing of the design.
 
 3. postsynFPGA: contains post-synthesis simulation you can download it and run it on Xilinx ISE.
 
-4. GenCases.sh: It's a bash script to **generate rondom 5 millions test cases** for test bench of the design.
+4. GenCases.sh: It's a bash script to **generate random 5 millions test cases** for test bench of the design.
 
 5. Running.sh: It's a bash script that runs the **GenCases.sh , TestFPU.cpp and TestFPU.v** test bench to test the design. 
 
@@ -51,23 +51,23 @@ In my design, I pipelined it into **five stages**. Lets look in deep in every st
 To optimize in power and area, we could use the same circuit with additonal control signals. <br/>
 
 First step is aligning the two operands, so we need to get the difference between the exponents. <br/>
-Then, we need shift the mantissa with the smaller exponent by the calculated difference and here we ill face first challange as the normal shifter is very slow.<br/>
+Then, we need shift the mantissa of the smaller exponent by the calculated difference and here we will face the first challange as the normal shifter is very slow.<br/>
 So I used [Barrel shifter](https://en.wikipedia.org/wiki/Barrel_shifter) which is very optimized in timing for sure but it has a lot of wires and muxes.<br/>
 
 Second step is calulating the result and here is the difference between the Add and Sub but first we need to understand concept in the standard. It is the sign and the Mantissa are being calculated totally independent. How this effect the operation ? this introduces to us **Effective Operation in ADD/SUB Circuit** that is the actual operation, which will be done, is depending on the signs of the both operands and the required operation as seen in the following table: <br/>
 ![Effectie operation](https://user-images.githubusercontent.com/36772600/88456692-0f891800-ce80-11ea-8585-7d8f344ec7d1.PNG) <br/>
 To optimize in area and power, I use only one adder to perform ADD and SUB. How does this work ? by adding Conditional Inverting which is inverting the smaller opernad when the effective operation is SUB. This always produces postive result to avoid adding inverting component to the result. <br/>
 
-Third step is normlizing the result. We need to realize the possible results here. In Addition, we could have overflow which means the Result is in **1X.XXXX** form so the result need to be shifted right by one postion and update exponent. In Subtraction, it's more complicated as the results may be have many leading zeros as **0.00001, 0.0000001** so the result need to be shifted left by number of leading zeros to return to the orginal form of the standard **1.XXXX** but we need to calculate the number of the leading zeros. This introduces to us new critical path.<br/>
+Third step is normlizing the result. We need to realize the possible results here. In Addition, we could have overflow which means the Result is in **1X.XXXX** form so the result need to be shifted right by one postion and update exponent. In Subtraction, it's more complicated as the results may be have many leading zeros as **0.00001, 0.0000001** so the result needs to be shifted left by number of leading zeros to return to the orginal form of the standard **1.XXXX** but we need to calculate the number of the leading zeros. This introduces to us new critical path.<br/>
 
-To avoid this critical path, we designed **Leading Zeros Counter(LZC)** which is calculating the number of the leading zeros. Then, we use this number with left barrel shifter to notmlize the result and the substract it from the exponent base. LZC is depending on **Local Counter Network(NLC)** which is inspired from[4] but we modified it to work on 6 bits so we have 4 NLCs work together in parallel then we use the outputs in boolean function to cacluate the number of leading zeros .<br/>
+To avoid this critical path, we designed **Leading Zeros Counter(LZC)** which calculates the number of the leading zeros. Then, we use this number with left barrel shifter to normalize the result and the substract it from the exponent base. LZC is depending on **Local Counter Network(NLC)** which is inspired from[4] but we modified it to work on 6 bits so we have 4 NLCs work together in parallel then we use the outputs in boolean function to cacluate the number of leading zeros .<br/>
 ![NLC](https://user-images.githubusercontent.com/36772600/88457940-757a9d00-ce8a-11ea-9761-855267c9be60.PNG)<br/>
 We could notice in the timing report it has a very optimized delay compared with priority encoder or any useful components to get the required number. It's also very optimized in area and power as we only use small logic gates.<br/>
 ![NLC Time](https://user-images.githubusercontent.com/36772600/88458005-08b3d280-ce8b-11ea-9c7e-7c369341ff24.PNG)<br/>
 
 After Normalization, we have the final result but need to be rounded due to we only have 23 bits. Rounding has many algorithms. We chose **"Round to Nearest, Tie to Even"**. As in this mode, the value represented is the closest possible to the exact value, it produces the smallest absolute error.<br/>
 ![Rounding](https://user-images.githubusercontent.com/36772600/88458580-56cad500-ce8f-11ea-9e32-356232e40b98.PNG)<br/>
-This Rounding algorthim is required 3 additional bits while normalizing the smaller opernad **Guard, Round and Sticky bit**. <br/>
+This Rounding algorthim requires 3 additional bits while normalizing the smaller opernad **Guard, Round and Sticky bit**. <br/>
 Guard and Sticky bits are the first discarded bits while normlization and the Sticky bit is the OR of the other discarded bits.<br/>
 We use them to generate Round Control Signal as **Round = G(L+R+T)**.
 
